@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Arrays;
 
-public class CryptoData {
+public class cryptoData {
 
     @SerializedName(value = "Response")
     private String response;
@@ -13,7 +13,7 @@ public class CryptoData {
     @SerializedName(value = "Aggregated")
     private boolean aggregated;
     @SerializedName(value = "Data")
-    private DataPerTime data[];
+    private dataPerTime data[];
     @SerializedName(value = "TimeTo")
     private int timeTo;
     @SerializedName(value = "TimeFrom")
@@ -24,7 +24,7 @@ public class CryptoData {
     @SerializedName(value = "HasWarning")
     boolean hasWarning;
 
-    public CryptoData(String response, int type, boolean aggregated, DataPerTime[] data, int timeTo, int timeFrom, boolean firstValueInArray) {
+    public cryptoData(String response, int type, boolean aggregated, dataPerTime[] data, int timeTo, int timeFrom, boolean firstValueInArray) {
         this.response = response;
         this.type = type;
         this.aggregated = aggregated;
@@ -34,28 +34,35 @@ public class CryptoData {
         this.firstValueInArray = firstValueInArray;
     }
 
-    public String GetResponse(){
+    public String getResponse() {
         return response;
     }
-    public int GetType(){
+
+    public int getType() {
         return type;
     }
-    public boolean GetAggregated(){
+
+    public boolean getAggregated() {
         return aggregated;
     }
-    public DataPerTime[] GetData(){
+
+    public dataPerTime[] getData() {
         return data;
     }
-    public int GetTimeTo(){
+
+    public int getTimeTo() {
         return timeTo;
     }
-    public int GetTimeFrom(){
+
+    public int getTimeFrom() {
         return timeFrom;
     }
-    public boolean GetFirstValueInArray(){
+
+    public boolean getFirstValueInArray() {
         return firstValueInArray;
     }
-    public boolean GetHasWarning(){
+
+    public boolean getHasWarning() {
         return hasWarning;
     }
 

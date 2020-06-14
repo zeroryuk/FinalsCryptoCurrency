@@ -5,56 +5,61 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 
+import java.util.concurrent.CompletableFuture;
+
 public class CryptoController extends Application implements EventHandler<ActionEvent> {
 
-    private String Label = "Hours";
-    private String minuteAddress = "https://min-api.cryptocompare.com/data/histominute?aggregate=1&e=CCCAGG&extraParams=CryptoCompare&fsym=BTC&limit=10&tryConversion=false&tsym=USD";
-    private String hourAddress = "https://min-api.cryptocompare.com/data/histohour?aggregate=1&e=CCCAGG&extraParams=CryptoCompare&fsym=BTC&limit=10&tryConversion=false&tsym=USD";
-    private String dayAddress = "https://min-api.cryptocompare.com/data/histoday?aggregate=1&e=CCCAGG&extraParams=CryptoCompare&fsym=BTC&limit=10&tryConversion=false&tsym=USD";
-
+    private String label = "Hours";
     private Stage mainStage;
     private String jsonResult;
+    CryptoModule cryptoModule = new CryptoModule();
+    CryptoView cryptoView = new CryptoView();
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    void UpdateStage(){
-        CryptoModule cryptoModule = new CryptoModule();
-        CryptoView cryptoView = new CryptoView();
-        String targetAddress;
-
-        if(Label.equals("Minutes")){
-            targetAddress = minuteAddress;
-        }
-        else if(Label.equals("Hours")){
-            targetAddress = hourAddress;
-        }
-        else {
-            targetAddress = dayAddress;
-        }
-        jsonResult = cryptoModule.GetJsonFromAddress(targetAddress);
-
-        mainStage.setScene(cryptoView.SetScene(this,mainStage, cryptoModule.GetCryptoData(jsonResult),Label));
+    int updateStage(String jsonResult) {
+        this.jsonResult = jsonResult;
+        return 0;
     }
 
-    @Override public void start(Stage stage) {
-        mainStage = stage;
-        UpdateStage();
-        stage.show();
+    String getAPI() {
+        return cryptoModule.readApi(label);
+    }
+
+    void completableFuture() {
+        while (true) {
+            CompletableFuture<String> cf = new CompletableFuture<>();
+            cf.supplyAsync(this::getAPI).thenApply(this::updateStage);
+            while (true) {
+                try {
+                    mainStage.setScene(cryptoView.createScene(this, mainStage, cryptoModule.getCryptoData(jsonResult), label));
+                    break;
+                } catch (Exception e) {
+                    System.out.println("Waiting for json");
+                }
+            }
+            mainStage.show();
+            break;
+        }
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        mainStage = primaryStage;
+        completableFuture();
     }
 
     @Override
     public void handle(ActionEvent actionEvent) {
-        if(actionEvent.getSource().toString().contains("Days") && !Label.equals("Days")){
-            Label = "Days";
+        if (actionEvent.getSource().toString().contains("Days") && !label.equals("Days")) {
+            label = "Days";
+        } else if (actionEvent.getSource().toString().contains("Hours") && !label.equals("Hours")) {
+            label = "Hours";
+        } else if (actionEvent.getSource().toString().contains("Minutes") && !label.equals("Minutes")) {
+            label = "Minutes";
         }
-        else if(actionEvent.getSource().toString().contains("Hours")&& !Label.equals("Hours")){
-            Label = "Hours";
-        }
-        else if(actionEvent.getSource().toString().contains("Minutes")&& !Label.equals("Minutes")){
-            Label = "Minutes";
-        }
-        UpdateStage();
+        completableFuture();
     }
 }

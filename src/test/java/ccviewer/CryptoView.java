@@ -20,15 +20,15 @@ public class CryptoView{
 
     private CryptoController mainController;
 
-    public Scene SetScene(CryptoController cryptoController,Stage stage, CryptoData cryptoData, String Label){
+    public Scene createScene(CryptoController cryptoController, Stage stage, cryptoData cryptoData, String Label) {
         mainController = cryptoController;
         stage.setTitle("Crypto Currency Viewer by Tyrone Veneracion");
         //Declarations of variables
         BorderPane root = new BorderPane();
-        Label currentValue = SetLabel(cryptoData);
+        Label currentValue = setCurrentPriceLabel(cryptoData);
         BorderPane Top = new BorderPane();
         GridPane buttonsGrid = ButtonsGrid(Label);
-        LineChart<String,Number> lineChart = CryptoLineChart(cryptoData,Label);
+        LineChart<String, Number> lineChart = cryptoLineChart(cryptoData, Label);
 
         //Alignments and Adjustments
         Top.setPadding(new Insets(10,10,10,10));
@@ -36,26 +36,27 @@ public class CryptoView{
         buttonsGrid.setAlignment(Pos.TOP_RIGHT);
         Top.setLeft(currentValue);
         Top.setRight(buttonsGrid);
-        root.setPadding(new Insets(10,10,10,10));
+        root.setPadding(new Insets(10, 10, 10, 10));
         root.setTop(Top);
         root.setCenter(lineChart);
 
-        Scene scene  = new Scene(root,1024,720);
+        Scene scene = new Scene(root, 1024, 720);
         scene.getStylesheets().add("MainStyle.css");
         return scene;
     }
-    Label SetLabel(CryptoData cryptoData){
-        String currentValue = "Current Price\n$"+formatDecimal(cryptoData.GetData()[cryptoData.GetData().length-1].GetClose());
+
+    private Label setCurrentPriceLabel(cryptoData cryptoData) {
+        String currentValue = "Current Price\n$" + formatDecimal(cryptoData.getData()[cryptoData.getData().length - 1].getClose());
         Label label = new Label(currentValue);
         return label;
     }
 
-    private GridPane ButtonsGrid(String Label){
+    private GridPane ButtonsGrid(String Label) {
         GridPane buttonsGrid = new GridPane();
         Button daysButton = new Button("Days");
         daysButton.setOnAction(mainController);
 
-        GridPane.setConstraints(daysButton,1,0);
+        GridPane.setConstraints(daysButton, 1, 0);
         Button hoursButton = new Button("Hours");
         hoursButton.setOnAction(mainController);
 
@@ -79,21 +80,19 @@ public class CryptoView{
         return buttonsGrid;
     }
 
-    private LineChart<String,Number> CryptoLineChart(CryptoData cryptoData,String xLabel){
+    private LineChart<String, Number> cryptoLineChart(cryptoData cryptoData, String xLabel) {
         Float lowestValue = null;
         Float highestValue = null;
-        for (DataPerTime dpt : cryptoData.GetData()) {
-            if(lowestValue == null){
-                lowestValue = dpt.GetClose();
+        for (dataPerTime dpt : cryptoData.getData()) {
+            if (lowestValue == null) {
+                lowestValue = dpt.getClose();
+            } else if (lowestValue > dpt.getClose()) {
+                lowestValue = dpt.getClose();
             }
-            else if(lowestValue > dpt.GetClose()){
-                lowestValue = dpt.GetClose();
-            }
-            if(highestValue == null){
-                highestValue = dpt.GetClose();
-            }
-            else if(highestValue < dpt.GetClose()){
-                highestValue = dpt.GetClose();
+            if (highestValue == null) {
+                highestValue = dpt.getClose();
+            } else if (highestValue < dpt.getClose()) {
+                highestValue = dpt.getClose();
             }
         }
         //defining the axes
@@ -105,40 +104,40 @@ public class CryptoView{
                 new LineChart<>(xAxis, yAxis);
         lineChart.setTitle("Crypto Currency Viewer");
         //defining a series
-        XYChart.Series series = SetChartData(cryptoData);
+        XYChart.Series series = setChartData(cryptoData);
 
 
         lineChart.getData().add(series);
         return lineChart;
     }
 
-    public XYChart.Series SetChartData(CryptoData cryptoData){
+    public XYChart.Series setChartData(cryptoData cryptoData) {
         XYChart.Series series = new XYChart.Series();
         series.setName("BitCoin");
         //Sets the format of the xAxis
-        SimpleDateFormat formatter = Formatter(cryptoData.GetTimeFrom(),cryptoData.GetTimeTo());
+        SimpleDateFormat formatter = formatter(cryptoData.getTimeFrom(), cryptoData.getTimeTo());
 
-        for (DataPerTime dpt: cryptoData.GetData()) {
+        for (dataPerTime dpt : cryptoData.getData()) {
 
-            Calendar newCalendar = GetTimeAsDate(dpt.GetTime());
+            Calendar newCalendar = getTimeAsDate(dpt.getTime());
             String formatted = formatter.format(newCalendar.getTime());
-            series.getData().add(new XYChart.Data(formatted, dpt.GetClose()));
+            series.getData().add(new XYChart.Data(formatted, dpt.getClose()));
 
         }
         return series;
     }
 
-    SimpleDateFormat Formatter(int timeStart,int timeEnd){
+    SimpleDateFormat formatter(int timeStart, int timeEnd) {
         float seconds = timeEnd - timeStart;
-        float minutes = seconds/60;
-        float hours = minutes/60;
-        float days = hours/24;
+        float minutes = seconds / 60;
+        float hours = minutes / 60;
+        float days = hours / 24;
 
         SimpleDateFormat minutesFormat = new SimpleDateFormat("mm:ss");
         SimpleDateFormat HoursFormat = new SimpleDateFormat("HH:mm");
         SimpleDateFormat DateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
-        if(days > 1){
+        if (days > 1) {
             return DateFormat;
         }
         else if(hours > 1){
@@ -150,7 +149,7 @@ public class CryptoView{
     }
 
     //Converts time in to a calendar
-    Calendar GetTimeAsDate(int time){
+    Calendar getTimeAsDate(int time) {
         Calendar calendar = Calendar.getInstance();
         long seconds = time;
         long millis = seconds * 1000;

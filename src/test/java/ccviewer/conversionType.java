@@ -1,20 +1,20 @@
 package ccviewer;
 
-public class ConversionType {
+public class conversionType {
 
     private String type;
     private String conversionSymbol;
 
-    public ConversionType(String type, String conversionSymbol) {
+    public conversionType(String type, String conversionSymbol) {
         this.type = type;
         this.conversionSymbol = conversionSymbol;
     }
 
-    public String GetType(){
+    public String getType() {
         return type;
     }
 
-    public String GetConversionSymbol(){
+    public String getConversionSymbol() {
         return conversionSymbol;
     }
 

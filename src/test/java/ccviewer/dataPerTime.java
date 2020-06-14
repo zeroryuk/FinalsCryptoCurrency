@@ -2,7 +2,7 @@ package ccviewer;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DataPerTime {
+public class dataPerTime {
 
     private int time;
     private float close;
@@ -14,7 +14,7 @@ public class DataPerTime {
     @SerializedName(value = "volumeto")
     private float volumeTo;
 
-    public DataPerTime(int time, float close, float high, float low, float open, float volumeFrom, float volumeTo) {
+    public dataPerTime(int time, float close, float high, float low, float open, float volumeFrom, float volumeTo) {
         this.time = time;
         this.close = close;
         this.high = high;
@@ -24,31 +24,31 @@ public class DataPerTime {
         this.volumeTo = volumeTo;
     }
 
-    public  int GetTime(){
+    public int getTime() {
         return time;
     }
 
-    public float GetClose(){
+    public float getClose() {
         return close;
     }
 
-    public float GetHigh(){
+    public float getHigh() {
         return high;
     }
 
-    public float GetLow(){
+    public float getLow() {
         return low;
     }
 
-    public float GetOpen(){
+    public float getOpen() {
         return open;
     }
 
-    public float GetVolumeFrom(){
+    public float getVolumeFrom() {
         return volumeFrom;
     }
 
-    public float GetVolumeTo(){
+    public float getVolumeTo() {
         return volumeTo;
     }
 
